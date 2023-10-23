@@ -4,6 +4,7 @@ from odoo import api, fields, models
 class Checkout(models.Model):
     _name = "library.checkout"
     _description = "Checkout Request"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
 
     member_id = fields.Many2one("library.member", required=True)
     user_id = fields.Many2one("res.users", "Librarian", default=lambda s: s.env.user)

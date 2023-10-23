@@ -52,7 +52,7 @@ class Book(models.Model):
     )
 
     # Other fields:
-    active = fields.Boolean("Active?")
+    active = fields.Boolean("Active?", default=True)
     image = fields.Binary("Cover")
 
     # Relational Fields
