@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
     <record id="action_library_checkout" model="ir.actions.act_window">
         <field name="name">Checkouts</field>
         <field name="res_model">library.checkout</field>
@@ -11,7 +9,6 @@
               name="Checkout"
               action="action_library_checkout"
               parent="library_app.menu_library" />
-
     <record id="action_library_stage" model="ir.actions.act_window">
         <field name="name">Stages</field>
         <field name="res_model">library.checkout.stage</field>
@@ -22,6 +19,4 @@
               name="Stages"
               action="action_library_stage"
               parent="library_app.menu_library_configuration" />
-
 </odoo>
-
