@@ -82,6 +82,13 @@ class Checkout(models.Model):
         for checkout in self:
             checkout.count_checkouts = data.get(checkout.member_id.id, 0)
 
+    num_books = fields.Integer(compute="_compute_num_books", store=True)
+
+    @api.depends("line_ids")
+    def _compute_num_books(self):
+        for book in self:
+            book.num_books = len(book.line_ids)
+
 
 
     @api.model

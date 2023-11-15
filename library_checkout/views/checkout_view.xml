@@ -5,9 +5,23 @@
     <field name="model">library.checkout</field>
     <field name="arch" type="xml">
 
-      <tree>
+      <tree
+        decoration-muted="state in ['done', 'cancel']"
+        decoration-bf="state=='open'"
+      >
+        <header>
+            <button type="action"
+              name="%(action_checkout_message)d"
+              string="Send Messages"
+            />
+        </header>
+        <field name="state" invisible="True" />
+        <field name="name" />
         <field name="request_date" />
         <field name="member_id" />
+        <field name="stage_id" />
+        <field name="num_books" sum="Num. Books" />
+
       </tree>
 
     </field>
