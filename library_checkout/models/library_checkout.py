@@ -51,6 +51,12 @@ class Checkout(models.Model):
         copy=False,
         group_expand="_group_expand_stage_id")
     state = fields.Selection(related="stage_id.state")
+    kanban_state = fields.Selection(
+        [("normal", "In Progress"),
+         ("blocked", "Blocked"),
+         ("done", "Ready for next stage")],
+         "Kanban State",
+         default="normal")
 
     checkout_date = fields.Date(readonly=True)
     close_date = fields.Date(readonly=True)
