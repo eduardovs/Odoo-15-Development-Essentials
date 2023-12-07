@@ -1,4 +1,4 @@
-from odoo import api, fields, exceptions, models
+from odoo import api, exceptions, fields, models
 
 
 class Checkout(models.Model):
@@ -18,19 +18,6 @@ class Checkout(models.Model):
                 }
             }
 
-    # Replaced by _compute_request_date_onchange
-    #@api.onchange('member_id')
-    #def onchange_member_id(self):
-    #    today_date = fields.Date.today()
-    #    if self.request_date != today_date:
-    #        self.request_date = today_date
-    #        return {
-    #            'warning': {
-    #                'title': 'Changed Request Date',
-    #                'message': 'Request date changed to today!',
-    #            }
-    #        }
-
     @api.model
     def _default_stage(self):
         Stage = self.env["library.checkout.stage"]
@@ -41,7 +28,8 @@ class Checkout(models.Model):
         return stages.search([], order=order)
 
     name = fields.Char(string="Title")
-    member_image = fields.Binary(related="member_id.image_128")    
+    member_image = fields.Binary(related="member_id.image_128")
+
     member_id = fields.Many2one("library.member", required=True)
     user_id = fields.Many2one("res.users", "Librarian", default=lambda s: s.env.user)
     line_ids = fields.One2many(
@@ -69,7 +57,16 @@ class Checkout(models.Model):
 
     count_checkouts = fields.Integer(
         compute="_compute_count_checkouts")
-    
+
+    def _compute_count_checkouts_DISABLED(self):
+        "Naive version, not performance optimal"
+        for checkout in self:
+            domain = [
+                ("member_id", "=", checkout.member_id.id),
+                ("state", "not in", ["done", "cancel"]),
+            ]
+            checkout.count_checkouts = self.search_count(domain)
+
     def _compute_count_checkouts(self):
         "Performance optimized, to run a single database query"
         members = self.mapped("member_id")
@@ -88,8 +85,6 @@ class Checkout(models.Model):
     def _compute_num_books(self):
         for book in self:
             book.num_books = len(book.line_ids)
-
-
 
     @api.model
     def create(self, vals):
@@ -116,11 +111,23 @@ class Checkout(models.Model):
                 self.with_context(_checkout_write=True).write(
                     {"close_date": fields.Date.today()})
         return True
-    
+
+    # Replaced by _compute_request_date_onchange
+    #@api.onchange('member_id')
+    #def onchange_member_id(self):
+    #    today_date = fields.Date.today()
+    #    if self.request_date != today_date:
+    #        self.request_date = today_date
+    #        return {
+    #            'warning': {
+    #                'title': 'Changed Request Date',
+    #                'message': 'Request date changed to today!',
+    #            }
+    #        }
+
     def button_done(self):
         Stage = self.env["library.checkout.stage"]
         done_stage = Stage.search([("state", "=", "done")], limit=1)
         for checkout in self:
             checkout.stage_id = done_stage
-        
         return True
