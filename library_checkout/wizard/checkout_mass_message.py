@@ -1,8 +1,5 @@
-import logging
 from odoo import api, exceptions, fields, models
 
-
-_logger = logging.getLogger(__name__)
 
 
 class CheckoutMassMessage(models.TransientModel):
@@ -23,6 +20,7 @@ class CheckoutMassMessage(models.TransientModel):
         checkout_ids = self.env.context["active_ids"]
         defaults_dict["checkout_ids"] = [(6, 0, checkout_ids)]
         return defaults_dict
+    
 
     def button_send(self):
         self.ensure_one()
